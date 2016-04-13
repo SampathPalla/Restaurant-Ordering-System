@@ -25,127 +25,146 @@
         }
     </style>
     <script type="text/javascript">
-        function AddToOrder(Name, Cost) {
-            document.getElementById("MainContent_txtOrder").innerHTML += Name;
-            document.getElementById("MainContent_txtOrder").innerHTML += '\n';
-            var cost = parseFloat(document.getElementById("MainContent_txtCost").value) + parseFloat(Cost);
+        function addToOrder(Name, Cost) {
+            var nameSplit;
+            var lblName = Name.split(",")[0];
+
+            var chkName = 'chk' + lblName.replace(/\s+/g, '');
+            var divName = 'div' + lblName.replace(/\s+/g, '');
+            lblName = 'lbl' + lblName.replace(/\s+/g, '');
+
+            if (document.getElementById(lblName)) {
+                nameSplit = document.getElementById(chkName).value.split(",");
+                if (nameSplit[2]) {
+                    if (parseInt(nameSplit[2]) < 10) {
+                        document.getElementById(lblName).innerHTML = document.getElementById(lblName).innerHTML.slice(0, -1) + (parseInt(nameSplit[2]) + 1);
+                        document.getElementById(chkName).value = document.getElementById(chkName).value.slice(0, -1) + (parseInt(nameSplit[2]) + 1);
+                    }
+                    else {
+                        alert("Atmost 10X can be ordered");
+                        return false;
+                    }
+                }
+                else {
+                    document.getElementById(lblName).innerHTML += ', 2';
+                    document.getElementById(chkName).value += ', 2';
+                }
+            }
+            else {
+                var div = document.createElement("div");
+                div.setAttribute("id", divName);
+
+                var label = document.createElement("label");
+                var description = document.createTextNode(Name);
+                label.setAttribute("id", lblName);
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";    // make the element a checkbox
+                checkbox.name = 'remFood';      // give it a name we can check on the server side
+                checkbox.value = Name;
+                checkbox.setAttribute("id", chkName);
+            
+                label.appendChild(checkbox);   // add the box to the element
+                label.appendChild(description);// add the description to the element
+
+                div.appendChild(label);
+                document.getElementById('divAddToOrder').appendChild(div);
+            }
+            var cost = parseFloat(document.getElementById("txtCost").value) + parseFloat(Cost);
             cost = Math.round(cost * 100) / 100;
             var tax = cost / 10;
             tax = Math.round(tax * 100) / 100;
             var total = cost + tax;
             total = Math.round(total * 100) / 100;
-            document.getElementById("MainContent_txtCost").value = cost;
-            document.getElementById("MainContent_txtTax").value = tax;
-            document.getElementById("MainContent_txtTotalPrice").value = total;
+            document.getElementById("txtCost").value = cost;
+            document.getElementById("txtTax").value = tax;
+            document.getElementById("txtTotalPrice").value = total;
             return false;
+        }
+
+        function removeFromOrder() {
+            var food = document.getElementsByName('remFood');
+            for (var i = 0; i < food.length; i++) // loop through it
+            {
+                if (food[i].checked) // if its checked
+                {
+                    var nameSplit = food[i].value.split(",");
+                    nameSplit[1] = nameSplit[1].replace("$", "");
+                    if (nameSplit[2]) {
+                        var cost = parseFloat(document.getElementById("txtCost").value) - (parseFloat(nameSplit[1]) * parseInt(nameSplit[2]));
+                        cost = Math.round(cost * 100) / 100;
+                    }
+                    else {
+                        var cost = parseFloat(document.getElementById("txtCost").value) - parseFloat(nameSplit[1]);
+                        cost = Math.round(cost * 100) / 100;
+                    }
+                    var tax = cost / 10;
+                    tax = Math.round(tax * 100) / 100;
+                    var total = cost + tax;
+                    total = Math.round(total * 100) / 100;
+                    document.getElementById("txtCost").value = cost;
+                    document.getElementById("txtTax").value = tax;
+                    document.getElementById("txtTotalPrice").value = total;
+
+                    var remElem = (food[i]).parentNode.parentNode;
+                    removeElement(remElem);
+                }
+
+
+
+
+                else {
+                }
+            }
+            return false;
+        }
+        function removeElement(remElem) {
+            remElem.parentNode.removeChild(remElem);
+            remElem.style.display = 'none';
+            return true;
         }
     </script>
     <div class="row" >
         <div class="col-md-4" style="width:600px">
             <h1>Getting started</h1>
-            <p>
-                <h2>Chicken Wings $9.99</h2>
-                <img src="https://h2savecom.files.wordpress.com/2014/01/easy-honety-bbq-chicken-wings.jpg" alt="some_text" style="width:150px;height:100px;">
-                <h3>ingredients:</h3> Chicken wings, unsalted butter, clove garlic, hot sauce.
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('Chicken Wings, $9.99', 9.99); return false;"/>
-            </p>
-            <p>
-                <h2>Buffalo Wings $12.99</h2>
-                <img src="http://paleoaholic.com/wp-content/uploads/2013/08/buffalowing.jpg" alt="some_text" style="width:150px;height:100px;">
-                <h3>ingredients:</h3>
-                Chicken wings, melted butter, paprika, hot pepper sauce, salt, cayenne pepper, black pepper.
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd2" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('Buffalo Wings, $12.99', 12.99); return false;"/>
-            </p>
-            <p>
-                <h2>French Fries $5</h2>
-                <img src="https://cowcrumbs.files.wordpress.com/2015/06/french-fries-wallpaper-1.jpg" alt="some_text" style="width:150px;height:100px;">
-                <h3>ingredients:</h3>
-                Potatoes, Vegetable Oil, Natural Beef Flavor, Citric Acid, Dextrose, Sodium Acid Pyrophosphate, Salt.
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd3" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('French Fries, $5', 5); return false;"/>
-            </p>
-            <p>
-                <h2>Black Bean Patty Burger $6.25</h2>
-                <img src="http://mealexmailex.com/wp-content/uploads/2014/10/double-cheese-beef-burger.jpg?a1ef18" alt="some_text" style="width:150px;height:100px;">
-                <h3>ingredients:</h3>
-                Black Bean Patty, Salad, Buns, Cheese, Mayo, Tomato Sauce, Siracha.
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd4" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('Black Bean Patty Burger, $6.25', 6.25); return false;"/>
-            </p>
-            <p>
-                <h2>Chicken Tandoori $15.99</h2>
-                <img src="http://aramkitchen.com/wp-content/uploads/2013/09/legfinal1-piece-short.jpg" alt="some_text" style="width:150px;height:100px;">
-                <h3>ingredients:</h3>
-                Ginger and garlic paste, red chilli paste, chaat masala, tandoori masala, oil, curd, salt and lemon juice.
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd5" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('Chicken Tandoori, $15.99', 15.99); return false;"/>
-            </p>
-            <p>
-                <h2>Tres Leches $5.35</h2>
-                <img src="http://static.wixstatic.com/media/aaa310_468b9c05de384f94a46ff76114cd241c.gif" alt="some_text" style="width:150px;height:100px;">
-                <div class="rating">
-                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-            </p>
-            <p>
-                <asp:Button runat="server" ID="btnAdd6" class="btn btn-default" Text="Add To Order" OnClientClick="AddToOrder('Tres Leches, $5.35', 5.35); return false;"/>
-            </p>
+             <div id ="divMenuItems" class="col-md-4">
+                
+            </div>
         </div>
-        <div class="col-md-4" style="position:fixed; top: 2em; right: 1em">
+        <div class="col-md-4" style="position:fixed; top: 3em; right: 7em; ">
             <h1>Your Order</h1>
-            <asp:TextBox runat="server" ID="txtOrder" ReadOnly="true" TextMode="multiline" Rows="20" Columns="30"  style="opacity:0.6"></asp:TextBox>
+            <div id="divAddToOrder" class="col-md-4" style="width:60%; height:300px; overflow-y:scroll">
+                
+            </div>
             <br />
             <table runat="server" ID="tblAddToOrder">
                 <tr>
                     <td>
-                        <asp:Label runat="server" Text="Cost: "></asp:Label>
+                        <label runat="server">Cost: </label>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="txtCost" ReadOnly="true" Text="0" style="opacity:0.6"></asp:TextBox>
+                        <input type="text" runat="server" ID="txtCost" readonly="readonly" Text="0" style="opacity:0.6" />
                     </td>
                 </tr>
                 <tr>
                     <td>    
-                        <asp:Label runat="server" Text="Tax:  "></asp:Label>
+                        <label runat="server" Text="Tax:  ">Tax: </label>
                     </td>
                     <td>
-                       <asp:TextBox runat="server" ID="txtTax"  ReadOnly="true" Text="0" style="opacity:0.6"></asp:TextBox>
+                       <input type="text" runat="server" ID="txtTax" readonly="readonly" Text="0" style="opacity:0.6" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label runat="server" Text="Total: $"></asp:Label>
+                        <label runat="server" Text="Total: $">Total: $</label>
                     </td>
                     <td>
-                        <asp:TextBox runat="server" ID="txtTotalPrice" ReadOnly="true" Text="0" style="opacity:0.6"></asp:TextBox>
+                        <input type="text" runat="server" ID="txtTotalPrice" readonly="readonly" Text="0" style="opacity:0.6" />
                     </td>
                 </tr>
             </table>
-            <asp:Button runat="server" ID="btnPlaceOrder" class="btn btn-default" Text="Place Order" />
+            <input type="button" runat="server" ID="btnPlaceOrder" class="btn btn-default" value="Place Order" />
+            <input type="button" runat="server" ID="btnRemoveFrmOrder" class="btn btn-default" value="Remove Items From Order" onclick="removeFromOrder(); return false;" />
         </div>
     </div>
 

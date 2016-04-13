@@ -2052,6 +2052,7 @@ fieldset[disabled] .btn {
   color: #333333;
   background-color: #ffffff;
   border-color: #cccccc;
+  font-style:italic;
 }
 
 .btn-default:hover,

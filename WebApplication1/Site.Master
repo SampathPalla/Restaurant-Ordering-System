@@ -46,22 +46,22 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" runat="server" href="~/">Restaurant</a>
+                    <a class="navbar-brand" runat="server" href="~/" style="font-style:italic">Restaurant</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <asp:LoginView runat="server" ViewStateMode="Disabled">
                         <AnonymousTemplate>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a runat="server" href="~/">Menu</a></li>
-                                <li><a runat="server" href="~/About">About</a></li>
-                                <li><a runat="server" href="~/Contact">Contact</a></li>
+                                <li><a runat="server" href="~/" style="font-style:italic">menu</a></li>
+                                <li><a runat="server" href="~/About" style="font-style:italic">about</a></li>
+                                <li><a runat="server" href="~/Contact" style="font-style:italic">contact</a></li>
                             </ul>
                         </AnonymousTemplate>
                     </asp:LoginView>
                 </div>
             </div>
         </div>
-        <div class="container body-content" style="background-image:url(http://d23u40q2eppevw.cloudfront.net/_novaimg/galleria/307741.jpg)">
+        <div style="background-image: url('http://skininvestigation.com/img/fullsize/wooden_background_texture_pattern_images_for_website_hd_template_psd_free_download_800x516.jpg')">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
